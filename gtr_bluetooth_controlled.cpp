@@ -1,24 +1,24 @@
 #include <ESP32Servo.h>
 #include <WiFi.h>
 
-const char* ssid = "SSID da sua rede";
-const char* password = "Senha da sua rede";
+const char* ssid = "optimusXP";
+const char* password = "robocrazy";
 WiFiServer server(80);
 
 Servo servo;
 int i = 90;
-const int motor_frente = 13;
-const int motor_re = 12;
+const int motor_frente = 4;
+const int motor_re = 2;
 const int trigPin = 22;
 const int echoPin = 18;
-const int servoPin = 35;
+const int servoPin = 33;
 long unsigned duration;
 float distance;
 const float distanciaSegura = 20.0; // Definir a distância mínima segura (em cm)
 const int infra_vermelho1 = 34;
 
 void setup() {
-  Serial.begin(9600); // Inicialize a comunicação serial
+  Serial.begin(115200); // Inicialize a comunicação serial
   Serial.println();
   Serial.print("Conectando-se a ");
   Serial.println(ssid);
@@ -46,6 +46,7 @@ void setup() {
   Serial.println("WiFi conectada.");
   Serial.println("Endereço de IP: ");
   Serial.println(WiFi.localIP());
+
   server.begin();
 }
 
@@ -96,14 +97,13 @@ void loop() {
         if (currentLine.endsWith("GET /X")) {
           ajustarPosicaoNeutra();
         }
-        verificarDistancia();
       }
+      verificarDistancia();
     }
     client.stop();
     Serial.println("Cliente desconectado.");
   }
 }
-
 void verificarDistancia() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -113,9 +113,6 @@ void verificarDistancia() {
 
   duration = pulseIn(echoPin, HIGH);
   distance = duration * 0.0344 / 2; // Calcula a distância em cm
-
-  Serial.print("Distância: ");
-  Serial.println(distance);
 
   if (distance <= distanciaSegura) {
     pararMovimento(); // Para o movimento se um obstáculo estiver muito perto
@@ -143,27 +140,30 @@ void moverParaTras() {
 }
 
 void virarEsquerda() {
-  for (int i = 90; i < 180; i++) {
+  for (i = 90; i < 180; i++) {
     servo.write(i);
     delay(8);
   }
 }
 
 void virarDireita() {
-  for (int i = 90; i > 0; i--) {
+  for (i = 90; i > 0; i--) {
     servo.write(i);
     delay(8);
   }
 }
 
 void ajustarPosicaoNeutra() {
-  for (int i = 90; i < 180; i++) {
-    servo.write(i);
-    delay(8);
-  }
-  for (int i = 180; i > 90; i--) {
-    servo.write(i);
-    delay(8);
+  if(i > 90){
+    for (i = 90; i < 180; i++) {
+      servo.write(i);
+      delay(8);
+    }
+  } else {
+    for (i = 180; i > 90; i--) {
+      servo.write(i);
+      delay(8);
+    }
   }
 }
 
