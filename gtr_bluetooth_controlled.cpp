@@ -2,8 +2,8 @@
 Servo servo;
 int i = 90;
 char INBYTE;
-const int motor_frente = 2;
-const int motor_re = 4;
+const int motor_frente = 3;
+const int motor_re = 5;
 const int infra_vermelho = 10;
 const int trigPin = 13;
 const int echoPin = 12;
@@ -74,7 +74,7 @@ void moverParaFrente() {
 }
 
 void moverParaTras() {
-  if (digitalRead(infra_vermelho) == HIGH){
+  if (digitalRead(infra_vermelho) == LOW){
     digitalWrite(motor_re, LOW);
   } else{
     digitalWrite(motor_re, HIGH);
